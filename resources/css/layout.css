@@ -1,0 +1,121 @@
+@layer components {
+    html.lazy {
+        .lazy-body {
+            @apply bg-white dark:bg-cat-900 text-cat-900 dark:text-white antialiased;
+        }
+
+        .lazy-layout {
+            @apply flex lg:flex-row flex-col min-h-full;
+        }
+
+        .lazy-main {
+            @apply w-full;
+
+            html.lazy[theme-aside=show] & {
+                @apply lg:w-[calc(100%_-_280px)];
+            }
+        }
+
+        .lazy-container {
+            @apply lg:mx-auto lg:container w-full py-5 px-4 sm:px-6 md:px-8;
+        }
+
+        .lazy-container-sm {
+            @apply mx-auto max-w-7xl w-full py-5 px-4 sm:px-6 md:px-8;
+        }
+
+        aside.lazy-sidebar {
+            .lazy-sidebar-ghost-layout {
+                @apply relative transition-[width] duration-400 ease-in-out w-0;
+
+                html.lazy[theme-aside='show'] & {
+                    @apply w-[290px];
+                }
+            }
+
+            .lazy-sidebar-wrapper {
+                @apply fixed w-[290px] z-[60] top-0 start-0 bottom-0 lg:end-auto lg:bottom-0 overflow-y-auto overflow-hidden;
+                @apply bg-white dark:bg-cat-800/85 dark:lg:bg-cat-800/30 shadow-xl/5 dark:shadow-none backdrop-blur;
+                @apply -translate-x-full transition-transform duration-300 transform;
+
+                html.lazy[theme-aside='show'] & {
+                    @apply lg:translate-x-0;
+                }
+            }
+
+            .lazy-sidebar-body {
+                @apply pt-7 pb-10 h-full;
+            }
+
+            .lazy-sidebar-header {
+                @apply px-6;
+
+                .lazy-sidebar-brand {
+                    @apply flex-none text-xl font-semibold dark:text-white;
+                }
+            }
+
+            .lazy-sidebar-scroll-content {
+                @apply h-full;
+
+                nav {
+                    @apply p-4 w-full flex flex-col;
+                }
+            }
+
+            .lazy-sidebar-backdrop {
+                @apply fixed top-0 left-0 w-full h-full z-[59] bg-cat-900/40;
+            }
+
+            .lazy-sidebar-toggle {
+                @apply fixed top-1/2 -translate-y-1/2 left-0 w-4 h-20 z-50 bg-cat-200 dark:bg-cat-800 rounded-r-lg lg:flex hidden justify-center items-center cursor-pointer [html[theme-aside='show']_&]:translate-x-[290px] transition-transform duration-300 translate-x-0;
+                svg {
+                    @apply size-3.5 rotate-180;
+
+                    html[theme-aside='show'] & {
+                        @apply rotate-0;
+                    }
+                }
+            }
+        }
+
+        header.lazy-header {
+            @apply sticky top-0 bg-white/90 dark:bg-cat-900/90 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-[48] w-full text-sm py-2.5 sm:py-3 backdrop-blur;
+
+            nav {
+                @apply flex basis-full items-center w-full mx-auto px-4 sm:px-6 md:px-8;
+            }
+
+            .lazy-header-icon {
+                @apply w-full flex items-center justify-between;
+            }
+
+            .lazy-header-search-button {
+                @apply relative bg-cat-300/40 dark:bg-cat-700/20 text-cat-700 dark:text-cat-400 rounded-lg px-2 py-1.5 justify-between gap-x-3 items-center md:flex hidden cursor-pointer;
+
+                .shortcut {
+                    @apply bg-white dark:text-cat-800 py-1 px-2 text-xs font-bold rounded-md;
+                }
+            }
+        }
+    }
+}
+
+@layer base {
+    html.lazy {
+        ::-webkit-scrollbar {
+            width: 8px;
+            border-radius: 8px;
+            height: 3px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: none;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            @apply bg-cat-500/30;
+            border-radius: 8px;
+        }
+    }
+}

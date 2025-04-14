@@ -1,0 +1,22 @@
+@import "./theme-accent.css";
+@import "./theme-font.css";
+
+@import "./utils.css";
+@import "./layout.css";
+@import "./simplebar.css";
+
+@custom-variant dark (&:where([theme-mode=dark], [theme-mode=dark] *));
+
+@theme {
+    --color-cat-50: oklch(0.99 0.0011 197.14);
+    --color-cat-100: oklch(0.98 0.0017 247.84);
+    --color-cat-200: oklch(0.97 0.0034 247.86);
+    --color-cat-300: oklch(0.91 0.0081 253.86);
+    --color-cat-400: oklch(0.84 0.0149 244.75);
+    --color-cat-500: oklch(0.69 0.0242 248.18);
+    --color-cat-600: oklch(0.55 0.0291 244.76);
+    --color-cat-700: oklch(0.42 0.0238 253.08);
+    --color-cat-750: oklch(0.31 0.0241 251.04);
+    --color-cat-800: oklch(0.26 0.0213 248.65);
+    --color-cat-900: oklch(0.22 0.0165 252.5);
+}

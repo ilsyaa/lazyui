@@ -1,0 +1,18 @@
+@layer utilities {
+    .lazy-background {
+        @apply bg-white dark:!bg-cat-900 text-cat-900 dark:text-white;
+    }
+
+    .lazy-gradient {
+        backdrop-filter: blur(15px);
+        background-image: url(https://raw.githubusercontent.com/ilsyaa/ilsyaa/refs/heads/main/cdn/img/cyan-blur.png), url(https://raw.githubusercontent.com/ilsyaa/ilsyaa/refs/heads/main/cdn/img/red-blur.png);
+        background-repeat: no-repeat, no-repeat;
+        background-position: right top, left bottom;
+        background-size: 50%, 50%;
+    }
+
+    .lazy-gradient-none {
+        backdrop-filter: none;
+        background-image: none;
+    }
+}

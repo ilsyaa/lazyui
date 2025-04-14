@@ -1,0 +1,23 @@
+@layer theme {
+    html.lazy {
+        &[theme-font=inter] body {
+            @apply font-inter;
+        }
+
+        &[theme-font=sans] body {
+            @apply font-sans;
+        }
+
+        &[theme-font='monospace'] body {
+            @apply font-mono;
+        }
+
+        &[theme-font='serif'] body {
+            @apply font-serif;
+        }
+    }
+}
+
+@theme {
+    --font-inter: 'Inter', sans-serif;
+}
