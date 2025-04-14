@@ -1,6 +1,6 @@
 <?php
 
-namespace Kodingin\LazyUI\Commands;
+namespace LazyUI\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;

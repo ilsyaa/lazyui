@@ -1,11 +1,11 @@
 <?php
 
-namespace Kodingin\LazyUI;
+namespace LazyUI;
 
 use Illuminate\Support\ServiceProvider;
-use Kodingin\LazyUI\Commands\ComponentCommand;
-use Kodingin\LazyUI\Commands\InstallCommand;
-use Kodingin\LazyUI\Commands\LayoutCommand;
+use LazyUI\Commands\ComponentCommand;
+use LazyUI\Commands\InstallCommand;
+use LazyUI\Commands\LayoutCommand;
 
 class LazyServiceProvider extends ServiceProvider {
 

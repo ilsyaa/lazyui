@@ -1,5 +1,5 @@
 {
-    "name": "kodingin/lazyui",
+    "name": "lazyexe/lazyui",
     "description": "Yapping",
     "keywords": [
         "kodingin",
@@ -11,13 +11,13 @@
         "admin",
         "dashboard"
     ],
-    "homepage": "https://github.com/kodinginn/lazy-ui",
+    "homepage": "https://github.com/lazyexe/lazyui",
     "license": "MIT",
     "type": "library",
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "Kodingin\\LazyUI\\": "src/"
+            "LazyUI\\": "src/"
         }
     },
     "authors": [
@@ -30,7 +30,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Kodingin\\LazyUI\\LazyServiceProvider"
+                "LazyUI\\LazyServiceProvider"
             ]
         }
     },
