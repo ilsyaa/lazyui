@@ -18,7 +18,8 @@ class ComponentCommand extends Command implements PromptsForMissingInput
      * @var string
      */
     protected $signature = 'lazy:component
-        {name : The name of the component.}';
+        {name : The name of the component.}
+        {--silent : Silent mode.}';
 
     /**
      * The console command description.
@@ -33,6 +34,7 @@ class ComponentCommand extends Command implements PromptsForMissingInput
     public function handle(): void
     {
         $name = str()->slug($this->argument('name'));
+        $silent = $this->option('silent');
 
         if ($name == 'all') {
             if($this->confirm('Are you sure you want to publish all components?')) {
@@ -46,9 +48,11 @@ class ComponentCommand extends Command implements PromptsForMissingInput
                     }
                     File::copyDirectory(__DIR__ . '/../../resources/js/plugins', resource_path('js/lazy/plugins'));
                     File::copyDirectory($dirComponents, resource_path('views/components'));
-                    $this->components->success("All components published.");
-                    $this->components->bulletList(["resources/views/components"]);
-                    $this->newLine();
+                    if(!$silent) {
+                        $this->components->success("All components published.");
+                        $this->components->bulletList(["resources/views/components"]);
+                        $this->newLine();
+                    }
 
                     return;
                 }
@@ -67,9 +71,11 @@ class ComponentCommand extends Command implements PromptsForMissingInput
                 }
                 File::copy(__DIR__ . '/../../resources/js/plugins/' . $name . '.js', resource_path('js/lazy/plugins/' . $name . '.js'));
             }
-            $this->components->success("Component '{$name}' published.");
-            $this->components->bulletList(["resources/views/components/{$name}"]);
-            $this->newLine();
+            if(!$silent) {
+                $this->components->success("Component '{$name}' published.");
+                $this->components->bulletList(["resources/views/components/{$name}"]);
+                $this->newLine();
+            }
         } else {
             $this->newLine();
             $this->components->warn("Component '{$name}' not found.");

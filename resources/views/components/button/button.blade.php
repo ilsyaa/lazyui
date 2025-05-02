@@ -11,6 +11,7 @@
     $variantClasses = [
         'default' => 'bg-cat-900 dark:bg-white text-white dark:text-cat-900 shadow hover:bg-cat-800/90 dark:hover:bg-white/90',
         'destructive' => 'bg-red-600 dark:bg-red-700 text-white shadow-sm hover:bg-red-700 dark:hover:bg-red-800',
+        'accent' => 'bg-accent-500 text-white shadow-sm hover:bg-accent-600',
         'outline' => 'border shadow-xs border-cat-300 dark:border-cat-700 shadow-sm',
         'secondary' => 'bg-cat-300 dark:bg-cat-700 text-cat-900 dark:text-white shadow-sm',
         'ghost' => 'hover:bg-cat-300 dark:hover:bg-cat-700 text-cat-900 dark:text-white',

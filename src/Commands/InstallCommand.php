@@ -43,6 +43,8 @@ class InstallCommand extends Command implements PromptsForMissingInput
     {
         $this->createDirectories();
         $this->copyFiles();
+        $this->mergePackageJson();
+        $this->requireComponents();
     }
 
     protected function createDirectories(): void
@@ -66,5 +68,24 @@ class InstallCommand extends Command implements PromptsForMissingInput
             File::makeDirectory(resource_path('js/lazy/plugins'), 0777, true);
         }
         File::copyDirectory(__DIR__ . "/../../public/assets-lazy", public_path('assets/lazy'));
+    }
+
+    protected function mergePackageJson(): void
+    {
+        $packageRoot = File::get(base_path('package.json'));
+        $packageLazy = File::get(__DIR__ . '/../../package.json');
+        $package = json_decode($packageRoot, true);
+        $package = array_merge($package, json_decode($packageLazy, true));
+        File::put(
+            base_path('package.json'),
+            json_encode($package, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        );
+    }
+
+    protected function requireComponents(): void
+    {
+        $this->call('lazy:component', ['name' => 'button', '--silent' => true]);
+        $this->call('lazy:component', ['name' => 'dropdown', '--silent' => true]);
+        $this->call('lazy:component', ['name' => 'sheet', '--silent' => true]);
     }
 }

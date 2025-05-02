@@ -17,7 +17,7 @@ class LayoutCommand extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $signature = 'lazy:panel
+    protected $signature = 'lazy:layout
         {path : The path of your layout.}';
 
     /**

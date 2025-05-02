@@ -20,3 +20,5 @@
     --color-cat-800: oklch(0.26 0.0213 248.65);
     --color-cat-900: oklch(0.22 0.0165 252.5);
 }
+
+@plugin "@tailwindcss/forms";

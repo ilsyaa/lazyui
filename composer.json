@@ -1,6 +1,6 @@
 {
-    "name": "lazyexe/lazyui",
-    "description": "Yapping",
+    "name": "ilsyaa/lazyui",
+    "description": "Beautifully designed components that you can copy and paste into your apps. Accessible. Customizable. Open Source.",
     "keywords": [
         "kodingin",
         "livewire",
@@ -8,10 +8,15 @@
         "tables",
         "laravel",
         "tailwind",
+        "lazy",
+        "ui",
+        "lazyui",
+        "lazycode",
+        "lazyexe",
         "admin",
         "dashboard"
     ],
-    "homepage": "https://github.com/lazyexe/lazyui",
+    "homepage": "https://github.com/ilsyaa/lazyui",
     "license": "MIT",
     "type": "library",
     "minimum-stability": "dev",

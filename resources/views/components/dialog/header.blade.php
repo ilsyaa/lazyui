@@ -1,4 +1,4 @@
-<div class="relative bg-cat-100 dark:bg-cat-700/5 w-full rounded-t-xl">
+<div class="relative w-full rounded-t-xl">
     <div class="flex gap-x-1 items-center justify-end px-2 py-1 text-cat-500">
         <x-button size="icon" variant="ghost" class="size-7 rounded-full" x-on:click="toggleFullscreen()">
             <svg class="size-4 [.lazy-dialog-wrapper.fullscreen_&]:hidden block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><defs><style>.fa-secondary{opacity:.4}</style></defs><path fill="currentColor" class="fa-secondary" d="M448 64c0-17.7-14.3-32-32-32H320c-17.7 0-32 14.3-32 32s14.3 32 32 32h64v64c0 17.7 14.3 32 32 32s32-14.3 32-32V64zM32 320c-17.7 0-32 14.3-32 32v96c0 17.7 14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H64V352c0-17.7-14.3-32-32-32z"/><path fill="currentColor" class="fa-primary" d="M0 64C0 46.3 14.3 32 32 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H64v64c0 17.7-14.3 32-32 32s-32-14.3-32-32V64zM416 320c17.7 0 32 14.3 32 32v96c0 17.7-14.3 32-32 32H320c-17.7 0-32-14.3-32-32s14.3-32 32-32h64V352c0-17.7 14.3-32 32-32z"/></svg>
