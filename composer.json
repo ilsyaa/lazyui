@@ -19,7 +19,7 @@
     "homepage": "https://github.com/ilsyaa/lazyui",
     "license": "MIT",
     "type": "library",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "LazyUI\\": "src/"

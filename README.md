@@ -13,7 +13,7 @@ LazyUI is a collection of full-stack components for accelerated Laravel developm
 ## Installation
 
 ```bash
-composer require lazyexe/lazyui
+composer require ilsyaa/lazyui
 ```
 More documentation https://lazyui.koding.in
 ## Contributing
@@ -23,5 +23,5 @@ Thank you for considering contributing to Lazy UI! For the start we keep it simp
 Lazy UI is open-sourced software licensed under the MIT license.
 
 ## Credits 
-- [LazyCode](https://github.com/lazyexe)
+- [Ilsyaa](https://github.com/ilsyaa)
 - [KodingIn](https://github.com/kodinginn)
