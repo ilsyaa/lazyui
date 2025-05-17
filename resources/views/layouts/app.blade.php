@@ -15,7 +15,7 @@
         window.localStorageKey = 'lazy-settings';
         window.eventKey = 'lazy-appearance-change';
     </script>
-    <script src="{{ asset('assets/lazy/theme.js?v=2') }}"></script>
+    <script src="{{ asset('assets/lazy/theme.js?v=10') }}"></script>
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -30,6 +30,7 @@
         </main>
     </div>
     @livewireScripts
+    @include('[path].layouts.settings')
     @stack('body')
 </body>
 </html>

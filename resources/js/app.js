@@ -1,9 +1,11 @@
 import 'simplebar';
 
+import.meta.glob("./plugins/vanilla/*.js", { eager: true });
+
 document.addEventListener(
     "alpine:init",
     () => {
-        const modules = import.meta.glob("./plugins/**/*.js", { eager: true });
+        const modules = import.meta.glob("./plugins/alpine/*.js", { eager: true });
         for (const path in modules) {
             window.Alpine.plugin(modules[path].default);
         }

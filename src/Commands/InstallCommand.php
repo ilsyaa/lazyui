@@ -74,18 +74,40 @@ class InstallCommand extends Command implements PromptsForMissingInput
     {
         $packageRoot = File::get(base_path('package.json'));
         $packageLazy = File::get(__DIR__ . '/../../package.json');
+
         $package = json_decode($packageRoot, true);
-        $package = array_merge($package, json_decode($packageLazy, true));
+        $lazy = json_decode($packageLazy, true);
+
+        $package = $this->arrayMergeRecursiveDistinct($package, $lazy);
+
         File::put(
             base_path('package.json'),
             json_encode($package, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
         );
     }
 
+
+    protected function arrayMergeRecursiveDistinct(array &$array1, array &$array2): array
+    {
+        $merged = $array1;
+
+        foreach ($array2 as $key => &$value) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                $merged[$key] = $this->arrayMergeRecursiveDistinct($merged[$key], $value);
+            } else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
+    }
+
     protected function requireComponents(): void
     {
         $this->call('lazy:component', ['name' => 'button', '--silent' => true]);
         $this->call('lazy:component', ['name' => 'dropdown', '--silent' => true]);
+        $this->call('lazy:component', ['name' => 'nav', '--silent' => true]);
         $this->call('lazy:component', ['name' => 'sheet', '--silent' => true]);
+        $this->call('lazy:component', ['name' => 'switch', '--silent' => true]);
     }
 }

@@ -10,7 +10,7 @@
         x-trap.inert.noscroll="$store.sidebar.isOpen"
         @keydown.escape.window="$store.sidebar.close()"
         :class="{'translate-x-0': $store.sidebar.isOpen}"
-        class="lazy-sidebar-wrapper"
+        class="lazy-sidebar-wrapper lazy-gradient"
     >
         <div class="lazy-sidebar-body">
             <div class="lazy-sidebar-header">
