@@ -43,6 +43,7 @@ class ComponentCommand extends Command implements PromptsForMissingInput
         'switch',
         'tabs',
         'textarea',
+        'tinymce',
         'toast',
         'tooltip',
     ];

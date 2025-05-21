@@ -15,7 +15,7 @@ const LazySettings = {
     eventKey: window.eventKey,
     autoInit() {
         this.setTheme(this._get('themeMode') || this.defaultMode, false, false)
-        this.setAccent(this._get('themeAccent' || this.defaultAccent), false, false)
+        this.setAccent(this._get('themeAccent') || this.defaultAccent, false, false)
         this.setFont(this._get('themeFont') || this.defaultFont, false, false)
         this.setAside(this._get('themeAside') || this.defaultAside, false, false)
         this.sentEvent(dispatchEvent)

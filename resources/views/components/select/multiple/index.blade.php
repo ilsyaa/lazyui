@@ -10,7 +10,7 @@
     x-on:keydown.escape.prevent="close()"
     x-on:keydown.enter.prevent="toggle()"
 >
-    <select class="sr-only" tabindex="-1" aria-hidden="true" x-ref="selectOrigin" {{ $attributes->only(['x-model', 'wire:model', 'name']) }} multiple>
+    <select class="sr-only" tabindex="-1" x-ref="selectOrigin" {{ $attributes }} x-on:focus="open()" multiple>
         {{ $slot }}
     </select>
 

@@ -1,5 +1,6 @@
 @props([
-    'displayIcon' => false
+    'displayIcon' => false,
+    'searchInput' => true
 ])
 
 <div
@@ -8,7 +9,7 @@
     x-on:keydown.escape.prevent="close()"
     x-on:keydown.enter.prevent="toggle()"
 >
-    <select class="sr-only" tabindex="-1" aria-hidden="true" x-ref="selectOrigin" {{ $attributes->only(['x-model', 'wire:model', 'name']) }}>
+    <select class="sr-only" tabindex="-1" x-ref="selectOrigin" {{ $attributes }} x-on:focus="open()">
         {{ $slot }}
     </select>
 
@@ -26,7 +27,6 @@
                     el.value = '';
                     el.value = val;
                 })"
-                {{ $attributes->except(['x-model', 'wire:model', 'name']) }}
                 x-on:click="toggle()"
             />
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none {{ $displayIcon ? '' : 'hidden' }}">
@@ -48,9 +48,11 @@
             class="z-[61] bg-white/90 rounded-md dark:bg-cat-800/90 lazy-gradient backdrop-blur w-full shadow"
             x-on:click.outside="close()"
         >
+            @if($searchInput)
             <div class="p-1 pb-0">
                 <input type="text" x-ref="search" placeholder="Start typing to search..." class="px-2 w-full rounded-md border-transparent bg-transparent focus:ring-0 focus-within:ring-0 text-sm" x-model="_search" />
             </div>
+            @endif
             <ul class="[&::-webkit-scrollbar]:!w-1 overflow-y-auto max-h-60 flex flex-col gap-y-1 p-1">
                 <template x-for="opt of getFilteredOptions()" :key="opt.value">
                     <li

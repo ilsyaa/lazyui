@@ -63,7 +63,8 @@ class Toast {
                     toastUpdate(payload);
                 };
                 return acc;
-            }, {})
+            }, {}),
+            remove: () => this.#remove(id)
         };
     }
 
