@@ -25,7 +25,7 @@
             'bg-cat-300/30 dark:bg-cat-600/10 text-cat-800 dark:text-cat-50' : isOpen
         }"
     >
-        <div class="mr-3 [&>svg]:size-4.5 [&>svg]:text-center flex-shrink-0">
+        <div class="mr-3 [&>svg]:size-5.5 [&>svg]:text-center flex-shrink-0">
             {{ $icon }}
         </div>
         <div class="line-clamp-1 flex-auto min-w-0 text-start">{{ $title }}</div>
