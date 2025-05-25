@@ -33,6 +33,7 @@ class ComponentCommand extends Command implements PromptsForMissingInput
         'checkbox',
         'dialog',
         'dropdown',
+        'fileupload',
         'form',
         'input',
         'label',

@@ -21,11 +21,7 @@
         @isset ($description)
         <div class="line-clamp-1 -my-2">
             <div class="line-clamp-1 flex-auto min-w-0 text-start">{{ $title }}</div>
-            <div
-                class="text-xs text-cat-500 font-light"
-                x-data
-                x-tooltip="{ text : '{{ $description }}' }"
-            >{{ $description }}</div>
+            <div class="text-xs opacity-50" x-data x-tooltip="{ text : '{{ $description }}' }" >{{ $description }}</div>
         </div>
         @else
         <div class="line-clamp-1 flex-auto min-w-0 text-start">{{ $title }}</div>
