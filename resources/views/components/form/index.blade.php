@@ -6,7 +6,7 @@
     'toastErrors' => 'summary' // summary, detailed
 ])
 
-<form {{ $attributes }} x-data="{ toast: @js($toast), toastErrors: @js($toastErrors) }" x-on:submit.prevent="__lazyForm($event, @js($id))">
+<form {{ $attributes }} x-data="{ toast: @js($toast), toastErrors: @js($toastErrors), action: @js($action), method: @js($method) }" x-on:submit.prevent="__lazyForm($event, @js($id))">
     {{ $slot }}
 </form>
 
@@ -24,8 +24,8 @@
             $event.target.classList.add('pointer-events-none')
 
             try {
-                let response = await fetch(@js($action), {
-                    method: @js($method),
+                let response = await fetch(xdata.action, {
+                    method: xdata.method,
                     body: formData,
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest'

@@ -4,9 +4,6 @@
         "@tailwindcss/forms": "^0.5.10"
     },
     "dependencies": {
-        "filepond": "^4.32.7",
-        "filepond-plugin-file-validate-type": "^1.2.9",
-        "filepond-plugin-image-preview": "^4.6.12",
         "simplebar": "^6.3.0",
         "tippy.js": "^6.3.7"
     }
