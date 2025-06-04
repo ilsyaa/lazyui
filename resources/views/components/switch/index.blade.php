@@ -4,7 +4,7 @@
     'variant' => 'default',
 ])
 
-<label role="switch" class="`inline-block cursor-pointer">
+<label role="switch" class="inline-block cursor-pointer">
     <input type="checkbox" {{ $attributes }} class="sr-only peer" />
     <div
         @class([

@@ -25,3 +25,11 @@ Alpine.store('sidebar', {
         this.isOpen = true;
     }
 });
+
+window.LazyUI = {
+    version: '1.0.5',
+    name: 'LazyUI',
+    author: 'Ilsya',
+    license: 'MIT',
+    github: 'https://github.com/ilsyaa/lazyui'
+}

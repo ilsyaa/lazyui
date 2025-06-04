@@ -107,7 +107,8 @@
             x-ref="toggle"
             x-on:keydown.down.prevent="focusNextOption"
             x-on:keydown.up.prevent="focusPreviousOption"
-            x-on:keydown.enter.prevent="_focus ? toggleSelected(_focus) : setSelected(_input) ; close();"
+            x-on:keydown.enter.stop.prevent="_focus ? toggleSelected(_focus) : setSelected(_input) ; close();"
+            x-on:keydown.comma.prevent="_focus ? toggleSelected(_focus) : setSelected(_input) ; close();"
             {{ $attributes->except(['x-model', 'wire:model', 'name', 'value']) }}
         >
             <template x-for="value in _selected" :key="index">

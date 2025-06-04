@@ -99,7 +99,7 @@ export default function (Alpine) {
                     if (!Object.values(this.instances).some(instance => instance.isOpen && instance.noscroll)) {
                         this._lockScroll(false);
                     }
-                }, 50);
+                }, 500);
             }
         },
 

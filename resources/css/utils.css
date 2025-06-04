@@ -11,6 +11,10 @@
         background-size: 50%, 50%;
     }
 
+    .lazy-shape-square {
+        mask: url("https://raw.githubusercontent.com/ilsyaa/ilsyaa/4ea11aea71f399ab1f5efcb090d7b0b8a1354a17/cdn/img/shape-square.svg");
+    }
+
     .lazy-gradient-none {
         backdrop-filter: none;
         background-image: none;

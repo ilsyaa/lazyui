@@ -20,7 +20,7 @@
         }
     }"
 
-    x-init="tabRepositionMarker($refs.tabButtons.firstElementChild);" class="relative w-full max-w-sm">
+    x-init="tabRepositionMarker($refs.tabButtons.firstElementChild);" class="relative w-full">
 
     {{ $slot }}
 </div>

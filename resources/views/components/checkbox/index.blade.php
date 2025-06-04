@@ -4,8 +4,8 @@
 
 @php
     $variantClasses = [
-        'default' => 'reverse checked:bg-cat-800 dark:checked:bg-white checked:border-cat-800 dark:checked:border-white indeterminate:!border-cat-500 hover:before:bg-cat-500/10 before:focus-visible:bg-cat-500/10',
-        'accent' => 'checked:bg-accent-500 checked:border-accent-500 indeterminate:!border-accent-500 hover:before:bg-accent-500/10 before:focus-visible:bg-accent-500/10',
+        'default' => 'reverse checked:bg-cat-800 dark:checked:bg-white checked:border-cat-800 dark:checked:border-white indeterminate:!border-cat-500 indeterminate:bg-cat-500 hover:before:bg-cat-500/10 before:focus-visible:bg-cat-500/10',
+        'accent' => 'checked:bg-accent-500 checked:border-accent-500 indeterminate:!border-accent-500 indeterminate:bg-accent-500 hover:before:bg-accent-500/10 before:focus-visible:bg-accent-500/10',
         'custom' => '',
     ];
 @endphp
