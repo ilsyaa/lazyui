@@ -34,7 +34,7 @@
 
     <div
         x-show="isOpen"
-        x-cloak
+        {{ $isActive ? '' : 'x-cloak' }}
         x-collapse
         class="w-full"
     >

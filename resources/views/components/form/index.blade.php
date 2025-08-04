@@ -13,12 +13,12 @@
 @pushOnce('body')
     <script>
         async function __lazyForm($event, $id) {
-            document.dispatchEvent(new CustomEvent('form', { detail: { id: $id, loading: true, element: $event } }));
+            window.dispatchEvent(new CustomEvent('form', { detail: { id: $id, loading: true, element: $event } }));
             const Form = $event.target;
             const xdata = Alpine.$data(Form);
             const formData = new FormData(Form);
             let toastl = null;
-            if (window.toast && toast) {
+            if (window.toast && xdata.toast) {
                 toastl = toast.loading('Loading...');
             }
             $event.target.classList.add('pointer-events-none')
@@ -35,10 +35,10 @@
                 const contentType = response.headers.get("content-type") || "";
                 const isJson = contentType.includes("application/json");
                 const data = isJson ? await response.json() : {};
-                document.dispatchEvent(new CustomEvent('form', { detail: { id: $id, ok: response.ok, data, element: $event } }));
+                window.dispatchEvent(new CustomEvent('form', { detail: { id: $id, ok: response.ok, data, element: $event } }));
 
                 if (!response.ok) {
-                    if(xdata.toastErrors == 'detailed') {
+                    if(xdata.toastErrors == 'detailed' && data.errors) {
                         toastl.remove();
                         Object.values(data.errors).forEach((value, index) => {
                             setTimeout(() => {
@@ -55,7 +55,7 @@
                 if (toastl) toastl.success(data.message || 'Success!');
                 $event.target.classList.remove('pointer-events-none');
             } catch (error) {
-                document.dispatchEvent(new CustomEvent('form', { detail: { id: $id, ok: false, data: error, element: $event } }));
+                window.dispatchEvent(new CustomEvent('form', { detail: { id: $id, ok: false, data: error, element: $event } }));
                 if (toastl) toastl.error(error.message || 'Failed to submit.');
                 $event.target.classList.remove('pointer-events-none');
             }

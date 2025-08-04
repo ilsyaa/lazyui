@@ -17,7 +17,7 @@ composer require ilsyaa/lazyui
 ```
 More documentation https://lazyui.koding.in
 ## Contributing
-Thank you for considering contributing to Lazy UI! For the start we keep it simple. If you find anything missing, please create a pull request.
+Repository Where you can contribute https://github.com/ilsyaa/lazyui-docs
 
 ## License
 Lazy UI is open-sourced software licensed under the MIT license.

@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.7]
+
+### Bug Fixes
+- **Form Component**: Show detailed errors only when they exist and fix toast issue.
+- **Dropdown Component**: Minor UI changes.
+- **Nav Component**: Prevent x-cloak on active nav items.
+- **Alert Component**: Improve alert component functionality.
+
 ## [v1.0.6]
 
 ### Bug Fixes

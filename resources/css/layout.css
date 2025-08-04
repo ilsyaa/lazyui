@@ -35,7 +35,7 @@
 
             .lazy-sidebar-wrapper {
                 @apply fixed w-[290px] z-[60] top-0 start-0 bottom-0 lg:end-auto lg:bottom-0 overflow-y-auto overflow-hidden;
-                @apply bg-white dark:bg-cat-800/85 dark:lg:bg-cat-800/30 shadow-xl/5 dark:shadow-none backdrop-blur;
+                @apply bg-white dark:bg-cat-800/85 dark:lg:bg-cat-800/30 shadow-xl dark:shadow-none backdrop-blur;
                 @apply -translate-x-full transition-transform duration-300 transform;
 
                 html.lazy[theme-aside='show'] & {

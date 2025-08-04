@@ -1,70 +1,117 @@
 class Alert {
     constructor() {
-        this.alerts = [];
+        this.activeAlerts = new Map();
         this.wrapperElement = null;
         this.isTransitioning = false;
-        this.eventEsc = this.#_onEsc.bind(this);
+        this.boundEscHandler = this.#onEsc.bind(this);
+        this.nextZIndex = 1000;
+        this.focusedElementBeforeAlert = null;
     }
 
-    #_createWrapper() {
+    #createWrapper() {
         if (this.wrapperElement) return;
 
         const wrapper = document.createElement('div');
-        wrapper.className = 'fixed size-full z-[99] p-4 top-0 left-0 flex sm:items-center items-end justify-center bg-black/10 backdrop-blur-[1px] opacity-0 transition-opacity duration-200 ease-out';
-        wrapper.onclick = (e) => {
-            if (e.target === wrapper && this.alerts.length && !this.isTransitioning) {
-                this.#_remove(this.alerts[0].id);
+        wrapper.className = 'fixed inset-0 z-[99] p-4 flex items-center justify-center bg-black/10 backdrop-blur-[1px] opacity-0 transition-opacity duration-200 ease-out';
+        wrapper.addEventListener('click', (e) => {
+            if (e.target === wrapper && this.activeAlerts.size > 0 && !this.isTransitioning) {
+                let topAlertId = null;
+                let maxZIndex = -1;
+                for (const [id, entry] of this.activeAlerts.entries()) {
+                    if (entry.element && parseInt(entry.element.style.zIndex || 0) > maxZIndex) {
+                        maxZIndex = parseInt(entry.element.style.zIndex || 0);
+                        topAlertId = id;
+                    }
+                }
+                if (topAlertId) {
+                    this.#remove(topAlertId, { confirmed: false, dismissedBy: 'overlay' });
+                }
             }
-        };
+        });
 
         this.wrapperElement = wrapper;
         document.body.appendChild(wrapper);
-        requestAnimationFrame(() => wrapper.classList.replace('opacity-0', 'opacity-100'));
-        this.#_lockScroll(true);
-        this.#_bindEscHandler();
+
+        requestAnimationFrame(() => {
+            if (this.wrapperElement) {
+                this.wrapperElement.classList.replace('opacity-0', 'opacity-100');
+            }
+        });
+
+        this.#lockScroll(true);
+        this.#bindEscHandler();
+
+        // Simpan elemen yang sedang fokus sebelum alert muncul
+        this.focusedElementBeforeAlert = document.activeElement;
     }
 
-    #_destroyWrapper() {
-        if (!this.wrapperElement) return;
+    async #destroyWrapper() {
+        if (!this.wrapperElement || this.activeAlerts.size > 0) return;
 
         this.isTransitioning = true;
         this.wrapperElement.classList.replace('opacity-100', 'opacity-0');
 
-        const fallbackTimeout = setTimeout(() => this.#_cleanupWrapper(), 300);
-        this.wrapperElement.addEventListener('transitionend', () => {
-            clearTimeout(fallbackTimeout);
-            this.#_cleanupWrapper();
-        }, { once: true });
+        await new Promise(resolve => {
+            const handleTransitionEnd = () => {
+                this.wrapperElement?.removeEventListener('transitionend', handleTransitionEnd);
+                resolve();
+            };
+            this.wrapperElement?.addEventListener('transitionend', handleTransitionEnd, { once: true });
+            setTimeout(resolve, 300);
+        });
 
-        this.#_unbindEscHandler();
-    }
-
-    #_cleanupWrapper() {
-        if (this.wrapperElement?.parentNode) {
-            document.body.removeChild(this.wrapperElement);
-            this.wrapperElement = null;
-            this.#_lockScroll(false);
-        }
+        this.#cleanupWrapper();
+        this.#unbindEscHandler();
         this.isTransitioning = false;
+        this.nextZIndex = 1000;
+
+        // Kembalikan fokus ke elemen yang sebelumnya aktif
+        if (this.focusedElementBeforeAlert && typeof this.focusedElementBeforeAlert.focus === 'function') {
+            this.focusedElementBeforeAlert.focus();
+            this.focusedElementBeforeAlert = null; // Bersihkan referensi
+        }
     }
 
-    #_lockScroll(lock) {
-        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-        document.body.style.overflow = lock ? 'hidden' : '';
-        document.body.style.paddingRight = lock ? `${scrollbarWidth}px` : '';
+    #cleanupWrapper() {
+        if (this.wrapperElement?.parentNode) {
+            this.wrapperElement.remove();
+            this.wrapperElement = null;
+            this.#lockScroll(false);
+        }
     }
 
-    #_bindEscHandler() {
-        document.addEventListener('keydown', this.eventEsc);
+    #lockScroll(lock) {
+        if (lock) {
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            document.body.style.overflow = 'hidden';
+            document.body.style.paddingRight = `${scrollbarWidth}px`;
+        } else {
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }
     }
 
-    #_unbindEscHandler() {
-        document.removeEventListener('keydown', this.eventEsc);
+    #bindEscHandler() {
+        document.addEventListener('keydown', this.boundEscHandler);
     }
 
-    #_onEsc(e) {
-        if (e.key === 'Escape' && this.alerts.length && !this.isTransitioning) {
-            this.#_remove(this.alerts[0].id);
+    #unbindEscHandler() {
+        document.removeEventListener('keydown', this.boundEscHandler);
+    }
+
+    #onEsc(e) {
+        if (e.key === 'Escape' && this.activeAlerts.size > 0 && !this.isTransitioning) {
+            let topAlertId = null;
+            let maxZIndex = -1;
+            for (const [id, entry] of this.activeAlerts.entries()) {
+                if (entry.element && parseInt(entry.element.style.zIndex || 0) > maxZIndex) {
+                    maxZIndex = parseInt(entry.element.style.zIndex || 0);
+                    topAlertId = id;
+                }
+            }
+            if (topAlertId) {
+                this.#remove(topAlertId, { confirmed: false, dismissedBy: 'escape' });
+            }
         }
     }
 
@@ -78,90 +125,154 @@ class Alert {
         cancelClass = 'bg-cat-300 dark:bg-cat-700 text-cat-900 dark:text-white shadow-sm',
         duration = false,
     } = {}) {
-        return new Promise((resolve) => {
-            if (this.isTransitioning) {
-                setTimeout(() => this.show({ type, title, text, confirmText, confirmClass, cancelText, cancelClass, duration, style }).then(resolve), 50);
-                return;
-            }
+        return new Promise(async (resolve) => {
+            const id = `zalert-${Math.random().toString(36).substring(2, 11)}`;
+            this.#createWrapper();
 
-            const id = `zalert-${Math.floor(Math.random() * 100000)}`;
-            this.#_createWrapper();
+            this.isTransitioning = true;
+            this.nextZIndex++;
 
-            const alertElement = this.#_createAlertElement({
+            const alertElement = this.#createAlertElement({
                 id, type, title, text, confirmText, confirmClass,
-                cancelText, cancelClass, duration, resolve
+                cancelText, cancelClass,
+                onConfirm: () => this.#remove(id, { confirmed: true, dismissedBy: 'confirm' }),
+                onCancel: () => this.#remove(id, { confirmed: false, dismissedBy: 'cancel' }),
             });
 
-            this.alerts.unshift({ id, element: alertElement });
-            this.wrapperElement.appendChild(alertElement);
+            alertElement.style.zIndex = this.nextZIndex;
+            alertElement.style.position = 'absolute';
+            alertElement.style.transform = 'scale(0.9)';
+            alertElement.style.opacity = '0';
+
+            this.activeAlerts.set(id, { element: alertElement, resolve });
+            this.wrapperElement?.appendChild(alertElement);
+
+            await new Promise(resolveTransition => {
+                const handleTransitionEnd = (e) => {
+                    if (e.target === alertElement && e.propertyName === 'opacity') {
+                        alertElement.removeEventListener('transitionend', handleTransitionEnd);
+                        resolveTransition();
+                    }
+                };
+                alertElement.addEventListener('transitionend', handleTransitionEnd);
+                requestAnimationFrame(() => {
+                    alertElement.style.transform = 'scale(1)';
+                    alertElement.style.opacity = '1';
+                    alertElement.style.transition = 'transform 0.15s ease-out, opacity 0.15s ease-out';
+                });
+                setTimeout(resolveTransition, 160);
+            });
+
+            this.isTransitioning = false;
+
+            const confirmButton = alertElement.querySelector(`#${id} .${confirmClass.split(' ')[0]}`); // Ambil tombol konfirmasi
+            if (confirmButton && typeof confirmButton.focus === 'function') {
+                confirmButton.focus();
+            } else {
+                alertElement.setAttribute('tabindex', '-1');
+                alertElement.focus();
+            }
+
 
             if (duration) {
-                setTimeout(() => !this.isTransitioning && this.#_remove(id), duration);
+                setTimeout(() => {
+                    if (this.activeAlerts.has(id)) {
+                        this.#remove(id, { confirmed: false, dismissedBy: 'timeout' });
+                    }
+                }, duration);
             }
         });
     }
 
-    #_remove(id) {
+    async #remove(id, result) {
         if (this.isTransitioning) return;
 
-        const alert = this.alerts.find(a => a.id === id);
-        if (!alert) return;
+        const alertEntry = this.activeAlerts.get(id);
+        if (!alertEntry || !alertEntry.element) return;
 
         this.isTransitioning = true;
-        this.alerts = this.alerts.filter(a => a.id !== id);
+        const { element: el, resolve } = alertEntry;
 
-        const el = alert.element;
-        el.style.transform = 'scale(0.8)';
+        el.style.transform = 'scale(0.9)';
         el.style.opacity = '0';
+        el.style.transition = 'transform 0.15s ease-out, opacity 0.15s ease-out';
 
-        const fallbackTimeout = setTimeout(() => this.#_removeAlertElement(el), 300);
-        el.addEventListener('transitionend', (e) => {
-            if (e.propertyName === 'opacity') {
-                clearTimeout(fallbackTimeout);
-                this.#_removeAlertElement(el);
-            }
-        }, { once: true });
-    }
 
-    #_removeAlertElement(el) {
+        await new Promise(resolveTransition => {
+            const handleTransitionEnd = (e) => {
+                if (e.target === el && e.propertyName === 'opacity') {
+                    el.removeEventListener('transitionend', handleTransitionEnd);
+                    resolveTransition();
+                }
+            };
+            el.addEventListener('transitionend', handleTransitionEnd);
+            setTimeout(resolveTransition, 160);
+        });
+
         el.remove();
-        if (!this.alerts.length) {
-            this.#_destroyWrapper();
-        } else {
-            this.isTransitioning = false;
+        this.activeAlerts.delete(id);
+        resolve(result);
+
+        this.isTransitioning = false;
+
+        if (this.activeAlerts.size === 0) {
+            this.#destroyWrapper();
         }
     }
 
-    #_createAlertElement({
+    #createAlertElement({
         id, type, title, text, confirmText, confirmClass,
-        cancelText, cancelClass, resolve
+        cancelText, cancelClass, onConfirm, onCancel
     }) {
         const div = document.createElement('div');
         div.id = id;
-        div.className = 'w-full max-w-md transition-[transform,opacity] ease-out duration-150';
+        div.className = 'w-full max-w-md';
 
-        const isCenter = this.#_style(type);
-        div.innerHTML = `<div class="bg-white dark:bg-cat-800 rounded-2xl p-5 w-full ${isCenter ? 'style-center' : ''} motion-duration-300 motion-preset-pop"><div class="flex flex-col w-full"><div class="flex gap-3 ${this.#_style(type) ? 'flex-col items-center' : 'flex-row items-start'}">${this.#_style(type)}<div class="${isCenter ? 'text-center mx-3' : 'mt-0 text-left'}"><h3 class="text-lg font-semibold leading-6">${title}</h3><div class="mt-2"><p class="text-sm">${text}</p></div></div></div><div class="flex mt-5 gap-3 ${isCenter ? 'justify-center' : 'justify-end'}" id="button-wrapper"></div></div></div>`;
-        const wrapper = div.querySelector('#button-wrapper');
+        div.setAttribute('tabindex', '-1');
+        div.setAttribute('role', 'dialog');
+        div.setAttribute('aria-modal', 'true');
+
+        const iconHtml = this.#getIconHtml(type);
+        const isCenter = iconHtml !== '';
+        const titleAlignClass = isCenter ? 'text-center mx-3' : 'mt-0 text-left';
+        const buttonJustifyClass = isCenter ? 'justify-center' : 'justify-end';
+        const iconContainerClass = isCenter ? 'flex-col items-center' : 'flex-row items-start';
+
+        div.innerHTML = `
+            <div class="bg-white dark:bg-cat-800 rounded-2xl p-5 w-full motion-duration-300 motion-preset-pop">
+                <div class="flex flex-col w-full">
+                    <div class="flex gap-3 ${iconContainerClass}">
+                        ${iconHtml}
+                        <div class="${titleAlignClass}">
+                            <h3 class="text-lg font-semibold leading-6">${title}</h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-700 dark:text-gray-300">${text}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex mt-5 gap-3 ${buttonJustifyClass}" id="button-wrapper-${id}"></div>
+                </div>
+            </div>
+        `;
+
+        const wrapper = div.querySelector(`#button-wrapper-${id}`);
+
+        let confirmBtn;
 
         if (cancelText) {
-            const cancelBtn = this.#_createButton(cancelClass, cancelText, () => {
-                this.#_remove(id);
-                resolve({ confirmed: false });
-            });
+            const cancelBtn = this.#createButton(cancelClass, cancelText, onCancel);
             wrapper.appendChild(cancelBtn);
         }
 
-        const confirmBtn = this.#_createButton(confirmClass, confirmText, () => {
-            this.#_remove(id);
-            resolve({ confirmed: true });
-        });
+        confirmBtn = this.#createButton(confirmClass, confirmText, onConfirm);
         wrapper.appendChild(confirmBtn);
+
+        confirmBtn.setAttribute('data-alert-action', 'confirm');
 
         return div;
     }
 
-    #_style(type) {
+    #getIconHtml(type) {
         switch (type) {
             case 'info':
                 return `<div class="w-16 h-16 rounded-full bg-sky-500/10 flex justify-center items-center flex-shrink-0"><svg class="size-10 text-sky-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M12 17v-6"/><circle cx="1" cy="1" r="1" fill="currentColor" transform="matrix(1 0 0 -1 11 9)"/><path opacity="0.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg></div>`;
@@ -172,13 +283,13 @@ class Alert {
             case 'warning':
                 return `<div class="w-16 h-16 rounded-full bg-yellow-500/10 flex justify-center items-center flex-shrink-0"><svg class="size-10 text-yellow-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" opacity="0.5"/><path stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M12 7v6"/><circle cx="12" cy="16" r="1" fill="currentColor"/></g></svg></div>`;
             case 'loading':
-                return `<div class="w-16 h-16 rounded-full bg-cat-500/10 flex justify-center items-center flex-shrink-0"><svg class="size-10 text-cat-500 animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><style>.fa-secondary{opacity:.4}</style></defs><path fill="currentColor" class="fa-secondary" d="M256 64C150 64 64 150 64 256s86 192 192 192c70.1 0 131.3-37.5 164.9-93.6l.1 .1c-6.9 14.9-1.5 32.8 13 41.2c15.3 8.9 34.9 3.6 43.7-11.7c.2-.3 .4-.6 .5-.9l0 0C434.1 460.1 351.1 512 256 512C114.6 512 0 397.4 0 256S114.6 0 256 0c-17.7 0-32 14.3-32 32s14.3 32 32 32z"/><path fill="currentColor" class="fa-primary" d="M224 32c0-17.7 14.3-32 32-32C397.4 0 512 114.6 512 256c0 46.6-12.5 90.4-34.3 128c-8.8 15.3-28.4 20.5-43.7 11.7s-20.5-28.4-11.7-43.7c16.3-28.2 25.7-61 25.7-96c0-106-86-192-192-192c-17.7 0-32-14.3-32-32z"/></svg></div>`;
+                return `<div class="w-16 h-16 rounded-full bg-cat-500/10 flex justify-center items-center flex-shrink-0"><svg class="size-10 text-cat-500 animate-spin" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><style>.fa-secondary{opacity:.4}</styledefs><path fill="currentColor" class="fa-secondary" d="M256 64C150 64 64 150 64 256s86 192 192 192c70.1 0 131.3-37.5 164.9-93.6l.1 .1c-6.9 14.9-1.5 32.8 13 41.2c15.3 8.9 34.9 3.6 43.7-11.7c.2-.3 .4-.6 .5-.9l0 0C434.1 460.1 351.1 512 256 512C114.6 512 0 397.4 0 256S114.6 0 256 0c-17.7 0-32 14.3-32 32s14.3 32 32 32z"/><path fill="currentColor" class="fa-primary" d="M224 32c0-17.7 14.3-32 32-32C397.4 0 512 114.6 512 256c0 46.6-12.5 90.4-34.3 128c-8.8 15.3-28.4 20.5-43.7 11.7s-20.5-28.4-11.7-43.7c16.3-28.2 25.7-61 25.7-96c0-106-86-192-192-192c-17.7 0-32-14.3-32-32z"/></svg></div>`;
             default:
                 return ``;
         }
     }
 
-    #_createButton(className, text, onClick) {
+    #createButton(className, text, onClick) {
         const base = 'relative inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2';
         const btn = document.createElement('button');
         btn.className = base + ' ' + className;
@@ -188,5 +299,5 @@ class Alert {
     }
 }
 
-const alert = new Alert();
-window.zalert = (options) => alert.show(options);
+const alertInstance = new Alert();
+window.zalert = (options) => alertInstance.show(options);
